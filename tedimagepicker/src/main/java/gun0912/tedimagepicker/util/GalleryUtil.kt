@@ -3,9 +3,12 @@ package gun0912.tedimagepicker.util
 import android.content.ContentUris
 import android.content.Context
 import android.database.Cursor
+import android.media.MediaMetadataRetriever
+import android.media.MediaMetadataRetriever.METADATA_KEY_DURATION
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
+import android.util.Log
 import gun0912.tedimagepicker.R
 import gun0912.tedimagepicker.builder.type.MediaType
 import gun0912.tedimagepicker.model.Album
@@ -19,6 +22,7 @@ internal class GalleryUtil {
         private const val INDEX_MEDIA_ID = MediaStore.MediaColumns._ID
         private const val INDEX_MEDIA_URI = MediaStore.MediaColumns.DATA
         private const val INDEX_DATE_ADDED = MediaStore.MediaColumns.DATE_ADDED
+        private const val INDEX_VIDEO_DURATION =  MediaStore.MediaColumns.DURATION
 
         private lateinit var albumName: String
 
@@ -40,8 +44,14 @@ internal class GalleryUtil {
                     }
 
                     val sortOrder = "$INDEX_DATE_ADDED DESC"
-                    val projection =
+
+                    var projection =
                         arrayOf(INDEX_MEDIA_ID, INDEX_MEDIA_URI, albumName, INDEX_DATE_ADDED)
+
+                    if(mediaType == MediaType.VIDEO) {
+                        projection = ArrayUtil.appendString(projection, INDEX_VIDEO_DURATION)
+                    }
+
                     val selection = MediaStore.Images.Media.SIZE + " > 0"
                     val cursor =
                         context.contentResolver.query(uri, projection, selection, null, sortOrder)
@@ -70,7 +80,7 @@ internal class GalleryUtil {
                             val albumName = context.getString(R.string.ted_image_picker_album_all)
                             Album(
                                 albumName,
-                                getOrElse(0) { Media(albumName, Uri.EMPTY, 0) }.uri,
+                                getOrElse(0) { Media(albumName, Uri.EMPTY, 0, 0) }.uri,
                                 this
                             )
                         }
@@ -98,7 +108,14 @@ internal class GalleryUtil {
                     val folderName = getString(getColumnIndex(albumName))
                     val mediaUri = getMediaUri(mediaType)
                     val datedAddedSecond = getLong(getColumnIndex(INDEX_DATE_ADDED))
-                    Media(folderName, mediaUri, datedAddedSecond)
+
+                    var duration: Long = 0
+
+                    if(mediaType == MediaType.VIDEO && mediaUri.path != null) {
+                        duration = getLong(getColumnIndex(INDEX_VIDEO_DURATION))
+                    }
+
+                    Media(folderName, mediaUri, datedAddedSecond, duration)
                 }
             } catch (exception: Exception) {
                 exception.printStackTrace()

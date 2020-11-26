@@ -45,7 +45,7 @@ class MainActivity : AppCompatActivity() {
     private fun setNormalMultiButton() {
         binding.btnNormalMulti.setOnClickListener {
             TedImagePicker.with(this)
-                .mediaType(MediaType.IMAGE)
+                .mediaType(MediaType.VIDEO)
                 .zoomIndicator(true)
                 .buttonGravity(ButtonGravity.TOP)
                 .showTitle(true)

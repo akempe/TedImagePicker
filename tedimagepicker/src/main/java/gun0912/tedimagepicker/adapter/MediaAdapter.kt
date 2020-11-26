@@ -14,7 +14,9 @@ import gun0912.tedimagepicker.builder.type.MediaType
 import gun0912.tedimagepicker.databinding.ItemGalleryCameraBinding
 import gun0912.tedimagepicker.databinding.ItemGalleryMediaBinding
 import gun0912.tedimagepicker.model.Media
+import gun0912.tedimagepicker.util.TextFormatUtil
 import gun0912.tedimagepicker.zoom.TedImageZoomActivity
+import java.util.concurrent.TimeUnit
 
 internal class MediaAdapter(
     private val activity: Activity,
@@ -91,6 +93,11 @@ internal class MediaAdapter(
 
                 showZoom =
                     !isSelected && (builder.mediaType == MediaType.IMAGE) && builder.showZoomIndicator
+
+                if(builder.mediaType == MediaType.VIDEO && data.duration != null) {
+                    showVideoMediaDuration = true
+                    videoMediaDuration = TextFormatUtil.getVideoMediaDurationText(data.duration)
+                }
             }
         }
 
