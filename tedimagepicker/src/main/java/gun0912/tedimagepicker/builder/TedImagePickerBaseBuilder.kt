@@ -81,7 +81,8 @@ open class TedImagePickerBaseBuilder<out B : TedImagePickerBaseBuilder<B>>(
     protected var onMultiSelectedListener: OnMultiSelectedListener? = null
     @IgnoredOnParcel
     protected var onErrorListener: OnErrorListener? = null
-
+    @IgnoredOnParcel
+    protected var onCancel: (() -> Unit)? = null
 
     @SuppressLint("CheckResult")
     protected fun startInternal(context: Context) {
@@ -108,8 +109,15 @@ open class TedImagePickerBaseBuilder<out B : TedImagePickerBaseBuilder<B>>(
                     if (activityResult.resultCode == Activity.RESULT_OK) {
                         onComplete(activityResult.data)
                     }
+                    if(activityResult.resultCode == Activity.RESULT_CANCELED) {
+                        onResultCanceled()
+                    }
                 }, { throwable -> onErrorListener?.onError(throwable.localizedMessage) })
             }
+    }
+
+    private fun onResultCanceled() {
+        onCancel?.invoke()
     }
 
     private fun onComplete(data: Intent) {

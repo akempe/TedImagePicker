@@ -33,6 +33,10 @@ class TedImagePicker {
             return this
         }
 
+        fun onCancelListener(action: () -> Unit): Builder {
+            this.onCancel = action
+            return this
+        }
 
         fun start(onSelectedListener: OnSelectedListener) {
             this.onSelectedListener = onSelectedListener
@@ -66,7 +70,6 @@ class TedImagePicker {
                 startInternal(it)
             }
         }
-
     }
 
 
