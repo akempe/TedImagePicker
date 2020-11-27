@@ -5,7 +5,7 @@ import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 
-internal abstract class BaseRecyclerViewAdapter<D, VH : BaseViewHolder<ViewDataBinding, D>>(private var headerCount: Int = 0) :
+internal abstract class BaseRecyclerViewAdapter<D, VH : BaseViewHolder<ViewDataBinding, D>>(protected var headerCount: Int = 0, protected var customBtnsCount: Int = 0) :
     RecyclerView.Adapter<VH>() {
 
     protected val items = mutableListOf<D>()
@@ -18,6 +18,8 @@ internal abstract class BaseRecyclerViewAdapter<D, VH : BaseViewHolder<ViewDataB
         fun onHeaderClick() {
             // no-op
         }
+
+        fun onCustomButtonClick() {}
     }
 
     open fun replaceAll(items: List<D>, useDiffCallback: Boolean = false) {
@@ -40,9 +42,11 @@ internal abstract class BaseRecyclerViewAdapter<D, VH : BaseViewHolder<ViewDataB
     override fun getItemViewType(position: Int) = getViewType(position).ordinal
 
 
-    private fun getViewType(position: Int): ViewType {
+    protected open fun getViewType(position: Int): ViewType {
         return if (position < headerCount) {
             ViewType.HEADER
+        } else if (position >= headerCount + items.size) {
+            ViewType.CUSTOM_BTN
         } else {
             ViewType.ITEM
         }
@@ -55,7 +59,7 @@ internal abstract class BaseRecyclerViewAdapter<D, VH : BaseViewHolder<ViewDataB
         return getViewHolder(parent, ViewType.getViewType(viewType)).apply {
             onItemClickListener?.let { listener ->
                 itemView.setOnClickListener {
-                    if (adapterPosition >= headerCount) {
+                    if (adapterPosition >= headerCount && adapterPosition < headerCount + items.size) {
                         listener.onItemClick(
                             getItem(adapterPosition),
                             getItemPosition(adapterPosition),
@@ -63,13 +67,17 @@ internal abstract class BaseRecyclerViewAdapter<D, VH : BaseViewHolder<ViewDataB
                         )
                     } else if (adapterPosition < headerCount) {
                         listener.onHeaderClick()
+                    } else if (adapterPosition >= items.size + headerCount) {
+                        listener.onCustomButtonClick()
                     }
                 }
             }
         }
     }
 
-    private fun getItemPosition(adapterPosition: Int) = adapterPosition - headerCount
+    private fun getItemPosition(adapterPosition: Int): Int {
+        return adapterPosition - headerCount
+    }
 
 
     override fun onBindViewHolder(holder: VH, position: Int) {
@@ -90,14 +98,14 @@ internal abstract class BaseRecyclerViewAdapter<D, VH : BaseViewHolder<ViewDataB
 
     fun getItemPosition(data: D) = items.indexOf(data).let { if (it < 0) it else it + headerCount }
 
-    override fun getItemCount(): Int = items.size + headerCount
+    override fun getItemCount(): Int = items.size + headerCount + customBtnsCount
 
     open fun getItem(position: Int): D =
         items[getItemPosition(position)]
 
 
     enum class ViewType {
-        HEADER, ITEM;
+        HEADER, ITEM, CUSTOM_BTN;
 
         companion object {
             fun getViewType(value: Int) = values()[value]

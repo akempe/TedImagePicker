@@ -7,8 +7,8 @@ import gun0912.tedimagepicker.R
 import gun0912.tedimagepicker.adapter.AlbumAdapter
 import gun0912.tedimagepicker.databinding.ItemAlbumExternBinding
 
-internal abstract class BaseSimpleHeaderAdapter<D>(headerCount: Int = HEADER_COUNT) :
-    BaseRecyclerViewAdapter<D, BaseViewHolder<ViewDataBinding, D>>(headerCount) {
+internal abstract class BaseCustomButtonAdapter<D>(headerCount: Int = HEADER_COUNT, customBtnsCount: Int = 1) :
+        BaseRecyclerViewAdapter<D, BaseViewHolder<ViewDataBinding, D>>(headerCount, customBtnsCount) {
 
     abstract fun getItemViewHolder(parent: ViewGroup): BaseViewHolder<ViewDataBinding, D>
     abstract fun getHeaderViewHolder(parent: ViewGroup): HeaderViewHolder<ViewDataBinding>
@@ -16,8 +16,8 @@ internal abstract class BaseSimpleHeaderAdapter<D>(headerCount: Int = HEADER_COU
 
 
     override fun getViewHolder(
-        parent: ViewGroup,
-        viewType: ViewType
+            parent: ViewGroup,
+            viewType: ViewType
     ): BaseViewHolder<*, D> {
         return when (viewType) {
             ViewType.HEADER -> getHeaderViewHolder(parent)
@@ -27,7 +27,7 @@ internal abstract class BaseSimpleHeaderAdapter<D>(headerCount: Int = HEADER_COU
     }
 
     open inner class HeaderViewHolder<out B : ViewDataBinding>(parent: ViewGroup, @LayoutRes layoutRes: Int) :
-        BaseViewHolder<B, D>(parent, layoutRes) {
+            BaseViewHolder<B, D>(parent, layoutRes) {
 
         override fun bind(data: D) {
             // no-op
@@ -48,7 +48,7 @@ internal abstract class BaseSimpleHeaderAdapter<D>(headerCount: Int = HEADER_COU
 
 
     companion object {
-        private const val HEADER_COUNT = 1
+        private const val HEADER_COUNT = 0
     }
 
 

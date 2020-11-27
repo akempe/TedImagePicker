@@ -1,21 +1,28 @@
 package gun0912.tedimagepicker.adapter
 
 import android.view.ViewGroup
+import androidx.databinding.ViewDataBinding
 import com.bumptech.glide.Glide
 import gun0912.tedimagepicker.R
+import gun0912.tedimagepicker.base.BaseCustomButtonAdapter
 import gun0912.tedimagepicker.base.BaseRecyclerViewAdapter
 import gun0912.tedimagepicker.base.BaseViewHolder
 import gun0912.tedimagepicker.builder.TedImagePickerBaseBuilder
 import gun0912.tedimagepicker.databinding.ItemAlbumBinding
+import gun0912.tedimagepicker.databinding.ItemGalleryCameraBinding
 import gun0912.tedimagepicker.model.Album
 import gun0912.tedimagepicker.util.TextFormatUtil
 
 internal class AlbumAdapter(private val builder: TedImagePickerBaseBuilder<*>) :
-    BaseRecyclerViewAdapter<Album, AlbumAdapter.AlbumViewHolder>() {
+    BaseCustomButtonAdapter<Album>() {
 
     private var selectedPosition = 0
 
-    override fun getViewHolder(parent: ViewGroup, viewType: ViewType) = AlbumViewHolder(parent)
+    override fun getItemViewHolder(parent: ViewGroup) = AlbumViewHolder(parent)
+
+    override fun getHeaderViewHolder(parent: ViewGroup) = HeaderViewHolder<ItemGalleryCameraBinding>(parent, R.layout.item_gallery_camera)
+
+    override fun getCustomButtonViewHolder(parent: ViewGroup) = CustomBtnViewHolder (parent)
 
     fun setSelectedAlbum(album: Album) {
         val index = items.indexOf(album)
@@ -40,4 +47,6 @@ internal class AlbumAdapter(private val builder: TedImagePickerBaseBuilder<*>) :
             Glide.with(itemView).clear(binding.ivImage)
         }
     }
+
+
 }

@@ -29,6 +29,7 @@ internal class MediaAdapter(
 
     override fun getHeaderViewHolder(parent: ViewGroup) = CameraViewHolder(parent)
     override fun getItemViewHolder(parent: ViewGroup) = ImageViewHolder(parent)
+    override fun getCustomButtonViewHolder(parent: ViewGroup) = CustomBtnViewHolder(parent)
 
     fun toggleMediaSelect(uri: Uri) {
         if (selectedUriList.contains(uri)) {
@@ -127,5 +128,7 @@ internal class MediaAdapter(
         }
 
     }
+
+
 
 }

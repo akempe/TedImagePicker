@@ -175,6 +175,11 @@ internal class TedImagePickerActivity : AppCompatActivity() {
 
         val albumAdapter = albumAdapter.apply {
             onItemClickListener = object : BaseRecyclerViewAdapter.OnItemClickListener<Album> {
+
+                override fun onCustomButtonClick() {
+                    this@TedImagePickerActivity.openSystemMediaPicker()
+                }
+
                 override fun onItemClick(data: Album, itemPosition: Int, layoutPosition: Int) {
                     this@TedImagePickerActivity.setSelectedAlbum(itemPosition)
                     binding.drawerLayout.close()
@@ -385,6 +390,8 @@ internal class TedImagePickerActivity : AppCompatActivity() {
 
 
     private fun setSelectedAlbum(selectedPosition: Int) {
+
+
         val album = albumAdapter.getItem(selectedPosition)
         if (this.selectedPosition == selectedPosition && binding.selectedAlbum == album) {
             return
@@ -420,7 +427,9 @@ internal class TedImagePickerActivity : AppCompatActivity() {
             binding.viewSelectedAlbumDropDown.visibility = View.GONE
         } else {
             binding.viewBottom.visibility = View.GONE
+
             binding.drawerLayout.setLock(true)
+            binding.drawerLayout.close()
         }
     }
 
@@ -457,6 +466,27 @@ internal class TedImagePickerActivity : AppCompatActivity() {
         super.onDestroy()
     }
 
+    private fun openSystemMediaPicker() {
+        val mediaType = "photo"
+
+        try {
+            val galleryIntent = Intent(Intent.ACTION_GET_CONTENT)
+            if (mediaType == "video") {
+                galleryIntent.type = "video/*"
+            } else {
+                galleryIntent.type = "*/*"
+                val mimetypes = arrayOf("image/*", "video/*")
+                galleryIntent.putExtra(Intent.EXTRA_MIME_TYPES, mimetypes)
+            }
+            galleryIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+            galleryIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+            galleryIntent.addCategory(Intent.CATEGORY_OPENABLE)
+            val chooserIntent = Intent.createChooser(galleryIntent, "Pick an image")
+            startActivityForResult(chooserIntent, 2)
+        } catch (e: Exception) {
+
+        }
+    }
 
     companion object {
         private const val IMAGE_SPAN_COUNT = 3
