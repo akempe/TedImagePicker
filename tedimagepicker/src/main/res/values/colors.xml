@@ -24,6 +24,6 @@
     <color name="ted_image_picker_scroller_background">#fafafa</color>
 
     <color name="ted_image_picker_zoom_background">#defafafa</color>
-
+    <color name="ted_image_picker_gray_background">#A6A6B1</color>
 
 </resources>

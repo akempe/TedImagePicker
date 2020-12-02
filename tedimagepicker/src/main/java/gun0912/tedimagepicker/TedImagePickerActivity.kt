@@ -4,6 +4,7 @@ import android.animation.AnimatorSet
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.ClipData
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -28,6 +29,7 @@ import gun0912.tedimagepicker.adapter.SelectedMediaAdapter
 import gun0912.tedimagepicker.base.BaseRecyclerViewAdapter
 import gun0912.tedimagepicker.builder.TedImagePickerBaseBuilder
 import gun0912.tedimagepicker.builder.type.AlbumType
+import gun0912.tedimagepicker.builder.type.MediaType
 import gun0912.tedimagepicker.builder.type.SelectType
 import gun0912.tedimagepicker.databinding.ActivityTedImagePickerBinding
 import gun0912.tedimagepicker.extenstion.close
@@ -74,7 +76,6 @@ internal class TedImagePickerActivity : AppCompatActivity() {
         setupButton()
         setupAlbumType()
         loadMedia()
-
     }
 
     private fun startAnimation() {
@@ -176,7 +177,7 @@ internal class TedImagePickerActivity : AppCompatActivity() {
         val albumAdapter = albumAdapter.apply {
             onItemClickListener = object : BaseRecyclerViewAdapter.OnItemClickListener<Album> {
 
-                override fun onCustomButtonClick() {
+                override fun onOtherSourceClick() {
                     this@TedImagePickerActivity.openSystemMediaPicker()
                 }
 
@@ -290,6 +291,61 @@ internal class TedImagePickerActivity : AppCompatActivity() {
             }
     }
 
+    @SuppressLint("CheckResult")
+    private fun openSystemMediaPicker() {
+        val galleryIntent = Intent(Intent.ACTION_GET_CONTENT)
+        val multiple = builder.maxCount > 1
+        var title = "Pick an image"
+
+
+        if (builder.mediaType == MediaType.VIDEO) {
+            galleryIntent.type = "video/*"
+            title = "Pick a video"
+        } else if(builder.mediaType == MediaType.IMAGE) {
+            galleryIntent.type = "image/*"
+            title = "Pick an image"
+        } else {
+            galleryIntent.type = "*/*"
+            val mimetypes = arrayOf("image/*", "video/*")
+            galleryIntent.putExtra(Intent.EXTRA_MIME_TYPES, mimetypes)
+            title = "Pick a file"
+        }
+
+        galleryIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+        galleryIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, multiple)
+        galleryIntent.addCategory(Intent.CATEGORY_OPENABLE)
+
+        val chooserIntent = Intent.createChooser(galleryIntent, title)
+
+        mediaAdapter.selectedUriList.clear()
+
+        TedRxOnActivityResult.with(this@TedImagePickerActivity)
+            .startActivityForResult(chooserIntent)
+            .subscribe { activityResult: ActivityResult ->
+                val data = activityResult.data
+                if (activityResult.resultCode == Activity.RESULT_OK) {
+                    if (multiple) {
+                        val clipData: ClipData? = data.clipData
+
+                        // only one image selected
+                        if (clipData == null) {
+                            mediaAdapter.selectedUriList.add(data.data!!)
+                        } else {
+                            for (i in 0 until clipData.itemCount) {
+                                val uri = clipData.getItemAt(i).uri
+                                mediaAdapter.selectedUriList.add(uri!!)
+                            }
+                        }
+                    } else {
+                        if (data.data != null) {
+                            mediaAdapter.selectedUriList.add(data.data!!)
+                        }
+                    }
+
+                    onMultiMediaDone()
+                }
+            }
+    }
 
     private fun onMediaClick(uri: Uri) {
         when (builder.selectType) {
@@ -464,28 +520,6 @@ internal class TedImagePickerActivity : AppCompatActivity() {
             disposable.dispose()
         }
         super.onDestroy()
-    }
-
-    private fun openSystemMediaPicker() {
-        val mediaType = "photo"
-
-        try {
-            val galleryIntent = Intent(Intent.ACTION_GET_CONTENT)
-            if (mediaType == "video") {
-                galleryIntent.type = "video/*"
-            } else {
-                galleryIntent.type = "*/*"
-                val mimetypes = arrayOf("image/*", "video/*")
-                galleryIntent.putExtra(Intent.EXTRA_MIME_TYPES, mimetypes)
-            }
-            galleryIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-            galleryIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
-            galleryIntent.addCategory(Intent.CATEGORY_OPENABLE)
-            val chooserIntent = Intent.createChooser(galleryIntent, "Pick an image")
-            startActivityForResult(chooserIntent, 2)
-        } catch (e: Exception) {
-
-        }
     }
 
     companion object {

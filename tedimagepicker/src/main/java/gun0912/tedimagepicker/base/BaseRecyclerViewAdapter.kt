@@ -19,7 +19,7 @@ internal abstract class BaseRecyclerViewAdapter<D, VH : BaseViewHolder<ViewDataB
             // no-op
         }
 
-        fun onCustomButtonClick() {}
+        fun onOtherSourceClick() {}
     }
 
     open fun replaceAll(items: List<D>, useDiffCallback: Boolean = false) {
@@ -68,7 +68,7 @@ internal abstract class BaseRecyclerViewAdapter<D, VH : BaseViewHolder<ViewDataB
                     } else if (adapterPosition < headerCount) {
                         listener.onHeaderClick()
                     } else if (adapterPosition >= items.size + headerCount) {
-                        listener.onCustomButtonClick()
+                        listener.onOtherSourceClick()
                     }
                 }
             }

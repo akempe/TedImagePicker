@@ -27,23 +27,14 @@
                 android:layout_height="@dimen/list_item_avatar_size_large"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
+                android:background="@color/ted_image_picker_gray_background"
                 app:layout_constraintTop_toTopOf="parent">
 
-<!--                <ImageView-->
-<!--                    android:id="@+id/iv_image"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="match_parent"-->
-<!--                    android:scaleType="centerCrop"-->
-<!--                    bind:imageUri="@{album.thumbnailUri}" />-->
-
-<!--                <ImageView-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="match_parent"-->
-<!--                    android:background="@color/ted_image_picker_selected_foreground"-->
-<!--                    android:padding="@dimen/default_padding_small"-->
-<!--                    android:src="@drawable/ic_check"-->
-<!--                    android:visibility="@{isSelected}" />-->
-
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="@dimen/default_padding_small"
+                    android:src="@drawable/ic_question_mark" />
             </FrameLayout>
 
 
@@ -60,8 +51,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/view_image"
                 app:layout_constraintTop_toTopOf="parent"
-                android:text="Other Source"
-                tools:text="Other Source" />
+                android:text="Other..."
+                tools:text="Other..." />
 
             <TextView
                 android:id="@+id/tv_count"
@@ -74,8 +65,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@id/tv_name"
                 app:layout_constraintTop_toBottomOf="@id/tv_name"
-                android:text="Select from external"
-                tools:text="Select from external" />
+                android:text="Other source..."
+                tools:text="Other source..." />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </FrameLayout>
