@@ -45,14 +45,14 @@ class MainActivity : AppCompatActivity() {
     private fun setNormalMultiButton() {
         binding.btnNormalMulti.setOnClickListener {
             TedImagePicker.with(this)
-                .mediaType(MediaType.VIDEO)
+                .mediaType(MediaType.IMAGE)
                 .zoomIndicator(true)
                 .buttonGravity(ButtonGravity.TOP)
                 .showTitle(true)
                 .cameraTileBackground(R.color.ted_image_picker_camera_background)
                 .savedDirectoryName("ted_image_picker")
                 .buttonBackground(R.color.ted_image_picker_primary)
-                .max(1, "The maximum number of photos is reached.")
+                .max(2, "The maximum number of photos is reached.")
                 .dropDownAlbum()
                 .imageCountTextFormat("%s photos")
                 .errorListener {

@@ -313,9 +313,12 @@ internal class TedImagePickerActivity : AppCompatActivity() {
             title = "Pick a file"
         }
 
-        galleryIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
         galleryIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, multiple)
         galleryIntent.addCategory(Intent.CATEGORY_OPENABLE)
+
+        galleryIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        galleryIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        galleryIntent.addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION)
 
         val chooserIntent = Intent.createChooser(galleryIntent, title)
 
