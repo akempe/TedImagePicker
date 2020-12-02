@@ -179,6 +179,8 @@ internal class TedImagePickerActivity : AppCompatActivity() {
 
                 override fun onOtherSourceClick() {
                     this@TedImagePickerActivity.openSystemMediaPicker()
+                    binding.drawerLayout.close()
+                    binding.isAlbumOpened = false
                 }
 
                 override fun onItemClick(data: Album, itemPosition: Int, layoutPosition: Int) {
