@@ -317,8 +317,8 @@ internal class TedImagePickerActivity : AppCompatActivity() {
         galleryIntent.addCategory(Intent.CATEGORY_OPENABLE)
 
         galleryIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        galleryIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        galleryIntent.addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION)
+//        galleryIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+//        galleryIntent.addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION)
 
         val chooserIntent = Intent.createChooser(galleryIntent, title)
 
