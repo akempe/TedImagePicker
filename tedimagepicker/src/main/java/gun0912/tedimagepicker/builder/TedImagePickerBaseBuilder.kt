@@ -88,11 +88,12 @@ open class TedImagePickerBaseBuilder<out B : TedImagePickerBaseBuilder<B>>(
     protected fun startInternal(context: Context) {
         checkPermission(context)
             .subscribe({ permissionResult ->
-                if (permissionResult.isGranted) {
-                    startActivity(context)
-                } else {
-                    onErrorListener?.onError("Permission denied")
-                }
+                startActivity(context)
+                // if (permissionResult.isGranted) {
+                //     startActivity(context)
+                // } else {
+                //     onErrorListener?.onError("Permission denied")
+                // }
             }, { throwable -> onErrorListener?.onError(throwable.localizedMessage) })
     }
 
